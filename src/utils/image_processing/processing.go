@@ -1,0 +1,129 @@
+package image_processing
+
+import (
+	"bytes"
+	"image"
+	_ "image/gif"
+	_ "image/jpeg"
+	_ "image/png"
+)
+
+//type result struct {
+//	Data []byte
+//	Err  error
+//}
+//
+//func DownloadImage(done <-chan struct{}, url string, wp workerpool.WorkerPool) (<-chan []byte, <-chan error) {
+//	content := make(chan []byte)
+//	errchan := make(chan error, 1)
+//
+//	go func() {
+//		defer close(content)
+//		ontentDownload := make(chan []byte)
+//		defer close(ontentDownload)
+//		wp.AddTask(func() {
+//			data, err := utils.DownloadFile(url)
+//			if err != nil {
+//				errchan <- err
+//				return
+//			}
+//			_, errc := guessImageFormat(data)
+//			if errc != nil {
+//				errchan <- errc
+//				return
+//			}
+//			ontentDownload <- data
+//			return
+//
+//		})
+//
+//		select {
+//		case data, ok := <-ontentDownload:
+//			if ok {
+//				content <- data
+//			}
+//		case <-done:
+//			return
+//		}
+//	}()
+//
+//	return content, errchan
+//}
+//
+//func ProcessImage(done chan struct{}, content <-chan []byte) <-chan *result {
+//	results := make(chan *result)
+//
+//	thumbnailer := func() {
+//		for buffer := range content {
+//			bImage := bimg.NewImage(buffer)
+//			srcImage, err := Translate(bImage, 200, 200)
+//
+//			if err != nil {
+//				select {
+//				case results <- &result{nil, err}:
+//				case <-done:
+//					return
+//				}
+//			}
+//			select {
+//			case results <- &result{srcImage, nil}:
+//			case <-done:
+//				return
+//			}
+//
+//		}
+//	}
+//	const numThunnail = 5
+//	var wg sync.WaitGroup
+//	wg.Add(numThunnail)
+//	for i := 0; i < numThunnail; i++ {
+//		go func() {
+//			thumbnailer()
+//			wg.Done()
+//		}()
+//	}
+//	go func() {
+//		wg.Wait()
+//		close(results)
+//	}()
+//	return results
+//}
+//
+//func Translate(image *bimg.Image, maxWidth, maxHeight int) (buffer []byte, err error) {
+//	imageSize, _ := image.Size()
+//	var ratio float64
+//	var newSize bimg.ImageSize
+//	if imageSize.Width >= imageSize.Height {
+//		ratio = float64(maxHeight) / float64(imageSize.Height)
+//		if ratio >= 1.0 {
+//			goto JustConvert
+//		}
+//		newSize.Width = int(math.Floor(float64(imageSize.Width) * ratio))
+//		newSize.Height = int(math.Floor(float64(imageSize.Height) * ratio))
+//	} else if imageSize.Width < imageSize.Height {
+//		ratio = float64(maxWidth) / float64(imageSize.Width)
+//		if ratio >= 1.0 {
+//			goto JustConvert
+//		}
+//		newSize.Width = int(math.Floor(float64(imageSize.Width) * ratio))
+//		newSize.Height = int(math.Floor(float64(imageSize.Height) * ratio))
+//	}
+//	_, err = image.ForceResize(newSize.Width, newSize.Height)
+//	if err != nil {
+//		return
+//	}
+//JustConvert:
+//	buffer, err = image.Convert(bimg.JPEG)
+//	if err != nil {
+//		return
+//	}
+//	return
+//}
+
+// Guess image format from gif/jpeg/png/webp
+func GuessImageFormat(data []byte) (format string, err error) {
+	// convert byte slice to io.Reader
+	reader := bytes.NewReader(data)
+	_, format, err = image.DecodeConfig(reader)
+	return
+}
