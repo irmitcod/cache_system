@@ -13,6 +13,8 @@ type config struct {
 	RedisDB       int    `env:"REDIS_DB" env-default:"0"`
 	MaxWidth      int    `env:"MAX_WIDTH" env-default:"120"`
 	MaxHeight     int    `env:"MAX_HEIGHT" env-default:"120"`
+	UpperBound    int    `env:"UPPER_BOUND" env-default:"200"`
+	LowerBound    int    `env:"LOWER_BOUND" env-default:"100"`
 }
 
 func GetConfig() *config {

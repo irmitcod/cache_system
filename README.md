@@ -1,4 +1,4 @@
-# clotho
+# Lfu cache
 
 This project is use for cache image  and use Clean Architecture. We use lfu and redis cache to mange all 
 Requested also handling error fo invalid urls

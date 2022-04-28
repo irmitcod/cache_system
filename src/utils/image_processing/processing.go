@@ -2,6 +2,7 @@ package image_processing
 
 import (
 	"bytes"
+	_ "golang.org/x/image/webp"
 	"image"
 	_ "image/gif"
 	_ "image/jpeg"
@@ -125,5 +126,21 @@ func GuessImageFormat(data []byte) (format string, err error) {
 	// convert byte slice to io.Reader
 	reader := bytes.NewReader(data)
 	_, format, err = image.DecodeConfig(reader)
+
 	return
 }
+
+//// Guess image format from gif/jpeg/png/webp
+//func guessImageFormat(r io.Reader) (format string, err error) {
+//	_, format, err = image.DecodeConfig(r)
+//	return
+//}
+//
+//// Guess image mime types from gif/jpeg/png/webp
+//func guessImageMimeTypes(r io.Reader) string {
+//	format, _ := guessImageFormat(r)
+//	if format == "" {
+//		return ""
+//	}
+//	return mime.TypeByExtension("." + format)
+//}

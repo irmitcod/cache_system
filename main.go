@@ -31,6 +31,10 @@ func main() {
 
 	// setup lfu cache
 	lfuCach := lfu.New()
+	//set upper bound for lfu cache if len oc cache reached to the UpperBound
+	//evict elements
+	lfuCach.UpperBound = configuration.UpperBound
+	lfuCach.LowerBound = configuration.LowerBound
 
 	// setup worker pool
 	totalWorker := 5

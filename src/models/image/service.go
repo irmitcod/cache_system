@@ -19,6 +19,10 @@ import (
 )
 
 var (
+	MaxRequest = 250
+)
+
+var (
 	ErrNon200        = errors.New("received non 200 response code")
 	ErrImageNotFound = errors.New("image not found")
 	requestCounter   = 0
@@ -56,13 +60,6 @@ func (i image) CacheUrl(url string) {
 }
 
 func (i image) DownloadImage(url string) (error rest_error.RestErr) {
-	//we Evict lfuCache every 50 request and  reset requestCounter to 0
-	if requestCounter == 50 {
-		i.lfuCache.Evict(1)
-		requestCounter = 0
-	}
-	requestCounter += 1
-
 	//get image form lfu cache
 	cache := i.lfuCache.Get(url)
 	if cache != nil {
@@ -136,14 +133,15 @@ func (i image) DownloadImage(url string) (error rest_error.RestErr) {
 	return nil
 }
 
-func (i image) GetImage(url string) (buffer []byte, error rest_error.RestErr) {
-	//we Evict lfuCache every 50 request and  reset requestCounter to 0
-	if requestCounter == 50 {
+func (i image) evictUrl() {
+	if requestCounter == MaxRequest {
 		i.lfuCache.Evict(1)
 		requestCounter = 0
 	}
 	requestCounter += 1
+}
 
+func (i image) GetImage(url string) (buffer []byte, error rest_error.RestErr) {
 	//get image form lfu cache
 	cache := i.lfuCache.Get(url)
 	if cache != nil {
